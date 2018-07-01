@@ -1,0 +1,40 @@
+{
+  "name": "ecommerce-client",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.0.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.10.0",
+    "jest-expo": "^25.0.0",
+    "react-native-scripts": "1.14.0",
+    "react-test-renderer": "16.3.1"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "apollo-boost": "^0.1.10",
+    "eslint-config-airbnb": "^17.0.0",
+    "expo": "^25.0.0",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
+    "native-base": "^2.6.1",
+    "react": "16.2.0",
+    "react-apollo": "^2.1.8",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+    "react-native-extended-stylesheet": "^0.8.1",
+    "react-router": "^4.3.1",
+    "react-router-native": "^4.3.0"
+  }
+}
