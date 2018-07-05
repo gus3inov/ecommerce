@@ -1,15 +1,44 @@
-import React from 'react';
-import { ApolloProvider } from "react-apollo";
-import ApolloClient from "apollo-boost";
+import React, { Component } from 'react';
+import { Font, AppLoading } from 'expo';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-boost';
 
 import Routes from './Routes';
 
 const client = new ApolloClient({
-    uri: "https://eu1.prisma.sh/muslim-guseinov-4235e0/ecommerce/ecommerce-dev"
+  uri: 'http://localhost:4000',
 });
 
-export default () => (
-    <ApolloProvider client={client}>
+class App extends Component {
+  state = {
+    loading: true,
+  };
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    });
+    this.setState({ loading: false });
+  }
+
+  render() {
+    const { loading } = this.state;
+
+    if (loading) {
+      return (
+        <ApolloProvider client={client}>
+          <AppLoading />
+        </ApolloProvider>
+      );
+    }
+
+    return (
+      <ApolloProvider client={client}>
         <Routes />
-    </ApolloProvider>
-);
+      </ApolloProvider>
+    );
+  }
+}
+
+export default App;
