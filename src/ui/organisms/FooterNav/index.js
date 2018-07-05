@@ -20,7 +20,6 @@ class FooterNav extends Component {
   render() {
     return (
       <Container>
-        <Header />
         <Content />
         <Footer>
           <FooterTab>
