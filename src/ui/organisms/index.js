@@ -1,7 +1,7 @@
 import FooterNav from './FooterNav';
 import Header from './Header';
 
-export default {
+export {
   FooterNav,
   Header,
 };
