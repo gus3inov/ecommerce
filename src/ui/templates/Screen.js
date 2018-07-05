@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Content } from 'native-base';
+import { Content, Container } from 'native-base';
 import { FooterNav, Header } from '../organisms';
-import styles from './style';
 
 class Screen extends Component {
   static propTypes = {};
@@ -11,15 +10,15 @@ class Screen extends Component {
   }
 
   handleBack = () => {
-    console.log('back')
+    console.log('back');
   };
 
   handleOpenMenu = () => {
-    console.log('back')
+    console.log('back');
   };
 
   render() {
-    const { title } = this.props;
+    const { title, children } = this.props;
 
     return (
       <Container>
@@ -28,9 +27,7 @@ class Screen extends Component {
           handleBack={this.handleBack}
           handleOpenMenu={this.handleOpenMenu}
         />
-        <Content>
-          {this.props.children}
-        </Content>
+        { children }
         <FooterNav />
       </Container>
     );
