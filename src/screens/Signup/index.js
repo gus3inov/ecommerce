@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
 import {
-  Container,
   Input,
   Label,
   Item,
-  Header,
-  Content,
   Form,
   Button,
+  Text,
 } from 'native-base';
-import Screen from './ui/templates/Screen';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import Screen from '../../ui/templates/Screen';
 import styles from './style';
 
 const signUpMutation = gql`
@@ -40,11 +37,16 @@ class Signup extends Component {
       return;
     }
     this.setState({ isSubmitting: true });
-    const response = await this.props.mutate({
-      variables: this.state.values,
-    });
+    let response;
+    try {
+      response = await this.props.mutate({
+        variables: this.state.values,
+      });
+    } catch(err) {
+      console.log('err --------', err);
+    }
 
-    console.log(response);
+    console.log('response -------', response);
     this.setState({ isSubmitting: false });
   };
 
