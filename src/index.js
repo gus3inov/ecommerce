@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Font, AppLoading } from 'expo';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
-
 import Routes from './Routes';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000',
+  uri: 'http://10.0.3.2:4000',
+  credentials: 'same-origin',
 });
 
 class App extends Component {
