@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
+import { AsyncStorage } from 'react-native';
 import {
-  Input,
-  Label,
-  Item,
   Form,
   Button,
   Text,
 } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import TextField from '../../ui/atoms/TextField';
 import Screen from '../../ui/templates/Screen';
 import styles from './style';
 
@@ -20,17 +19,19 @@ const signUpMutation = gql`
   }
 `;
 
+const defaultState = {
+  values: {
+    name: '',
+    email: '',
+    password: '',
+  },
+  errors: {},
+  isSubmitting: false,
+};
+
 @graphql(signUpMutation)
 class Signup extends Component {
-  state = {
-    values: {
-      name: '',
-      email: '',
-      password: '',
-    },
-    errors: {},
-    isSubmitting: false,
-  };
+  state = defaultState;
 
   submit = async () => {
     if(this.state.isSubmitting) {
@@ -42,12 +43,20 @@ class Signup extends Component {
       response = await this.props.mutate({
         variables: this.state.values,
       });
-    } catch(err) {
-      console.log('err --------', err);
+    } catch (err) {
+      this.setState({
+        errors: {
+          email: 'Already taken',
+        },
+        isSubmitting: false,
+      });
+
+      return;
     }
 
-    console.log('response -------', response);
-    this.setState({ isSubmitting: false });
+    await AsyncStorage.setItem('@ecommerce/token', response.data.signup.token);
+    this.setState(defaultState);
+    this.props.history.push('/products');
   };
 
   onChangeText = (key, value) => {
@@ -59,46 +68,58 @@ class Signup extends Component {
     }));
   };
 
+  redirectLoginPage = () => {
+    this.props.history.push('/login');
+  };
+
   render() {
-    const { values: { name, email, password } } = this.state;
+    const { errors, values: { name, email, password } } = this.state;
 
     return (
       <Screen title="Signup">
-        <Form>
-          <Item stackedLabel>
-            <Label>
-              { 'Username' }
-            </Label>
-            <Input
-              onChangeText={value => this.onChangeText('name', value)}
-              value={name}
-            />
-          </Item>
-          <Item stackedLabel>
-            <Label>
-              { 'Email' }
-            </Label>
-            <Input
-              onChangeText={value => this.onChangeText('email', value)}
-              value={email}
-            />
-          </Item>
-          <Item stackedLabel>
-            <Label>
-              { 'Password' }
-            </Label>
-            <Input
-              onChangeText={value => this.onChangeText('password', value)}
-              value={password}
-              secureTextEntry
-            />
-          </Item>
+        <Form style={styles.form}>
+          <TextField
+            value={name}
+            name="name"
+            placeholder="Username"
+            onChangeText={this.onChangeText}
+          />
+          {errors.email
+          && <Text>
+            {errors.email}
+          </Text>
+          }
+          <TextField
+            value={email}
+            name="email"
+            placeholder="Email"
+            onChangeText={this.onChangeText}
+          />
+          <TextField
+            value={password}
+            name="password"
+            secureTextEntry
+            placeholder="Password"
+            onChangeText={this.onChangeText}
+          />
           <Button
             onPress={this.submit}
             full
-            success>
+            success
+          >
             <Text>
               { 'Submit' }
+            </Text>
+          </Button>
+          <Text style={styles.textOr}>
+            { 'or' }
+          </Text>
+          <Button
+            onPress={this.redirectLoginPage}
+            full
+          >
+            <Text>
+              { 'Login' }
             </Text>
           </Button>
         </Form>

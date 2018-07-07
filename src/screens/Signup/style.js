@@ -1,9 +1,13 @@
-import EStyleSheet from 'react-native-extended-stylesheet';
-
-export default EStyleSheet.create({
+export default {
   container: {
     flex: 1,
     display: 'flex',
     justifyContent: 'center',
   },
-});
+  form: {
+    padding: 10,
+  },
+  textOr: {
+    textAlign: 'center',
+  },
+};
