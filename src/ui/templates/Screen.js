@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-native';
 import { Content, Container } from 'native-base';
 import { FooterNav, Header } from '../organisms';
 
+@withRouter
 class Screen extends Component {
   static propTypes = {};
 
@@ -11,6 +13,7 @@ class Screen extends Component {
 
   handleBack = () => {
     console.log('back');
+    this.props.history.goBack();
   };
 
   handleOpenMenu = () => {

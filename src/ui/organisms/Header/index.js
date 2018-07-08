@@ -23,7 +23,7 @@ const Header = (props) => {
     <Container>
       <NativeHeader>
         <Left>
-          <Button handleBack={handleBack} transparent>
+          <Button onPress={handleBack} transparent>
             <Icon name="arrow-back" />
           </Button>
         </Left>
