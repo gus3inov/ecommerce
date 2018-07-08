@@ -10,6 +10,7 @@ import gql from 'graphql-tag';
 import TextField from '../../ui/atoms/TextField';
 import Screen from '../../ui/templates/Screen';
 import styles from './style';
+import { TOKEN_KEY } from '../../constants';
 
 const signUpMutation = gql`
   mutation($name: String!, $email: String!, $password: String!){
@@ -54,7 +55,7 @@ class Signup extends Component {
       return;
     }
 
-    await AsyncStorage.setItem('@ecommerce/token', response.data.signup.token);
+    await AsyncStorage.setItem(TOKEN_KEY, response.data.signup.token);
     this.setState(defaultState);
     this.props.history.push('/products');
   };
