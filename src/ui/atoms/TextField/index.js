@@ -5,7 +5,7 @@ import {
   Item,
 } from 'native-base';
 
-class TextField extends React.Component {
+class TextField extends React.PureComponent {
   onChangeText = (text) => {
     const { onChangeText, name } = this.props;
     onChangeText(name, text);
@@ -25,6 +25,7 @@ class TextField extends React.Component {
           { placeholder }
         </Label>
         <Input
+          name={name}
           onChangeText={this.onChangeText}
           value={value}
           autoCapitalize="none"
