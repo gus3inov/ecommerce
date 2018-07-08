@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-native';
 import {
   Container,
   Header,
@@ -32,9 +33,11 @@ class FooterNav extends Component {
             <Button active>
               <Icon active name="navigate" />
             </Button>
-            <Button>
-              <Icon name="person" />
-            </Button>
+              <Button>
+                <Link to="/profile">
+                  <Icon name="person" />
+                </Link>
+              </Button>
           </FooterTab>
         </Footer>
       </Container>
