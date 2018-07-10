@@ -7,6 +7,9 @@ import {
 } from 'native-base';
 import { Image } from 'react-native';
 import { ImagePicker } from 'expo';
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
+import { ReactNativeFile } from 'apollo-upload-client';
 import TextField from '../../ui/atoms/TextField';
 import Screen from '../../ui/templates/Screen';
 import styles from './style';
@@ -21,31 +24,45 @@ const defaultState = {
   isSubmitting: false,
 };
 
+const createProductMutation = gql`
+  mutation($name: String!, $price: Float!, $picture: Upload!) {
+    createProduct(name: $name, price: $price, picture: $picture) {
+      id
+    }
+  }
+`
+
+@graphql(createProductMutation)
 class NewProduct extends Component {
   state = defaultState;
 
   submit = async () => {
-    // if(this.state.isSubmitting) {
-    //   return;
-    // }
-    // this.setState({ isSubmitting: true });
-    // let response;
-    // try {
-    //   response = await this.props.mutate({
-    //     variables: this.state.values,
-    //   });
-    // } catch (err) {
-    //   this.setState({
-    //     errors: {
-    //       email: 'Already taken',
-    //     },
-    //     isSubmitting: false,
-    //   });
-    //
-    //   return;
-    // }
-    //
-    // this.setState(defaultState);
+    if (this.state.isSubmitting) {
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+    const { pictureUrl, name, price } = this.state.values;
+    const picture = new ReactNativeFile({
+      uri: pictureUrl,
+      type: 'image/png',
+      name: 'i-am-a-name',
+    });
+  console.log('picture client ', picture)
+    try {
+      await this.props.mutate({
+        variables: {
+          name,
+          price,
+          picture,
+        },
+      });
+    } catch (err) {
+      console.log('err happened');
+      console.log(err);
+      return;
+    }
+
     this.props.history.push('/products');
   };
 
@@ -80,14 +97,13 @@ class NewProduct extends Component {
           <TextField
             value={name}
             name="name"
-            placeholder="Username"
+            placeholder="Name"
             onChangeText={this.onChangeText}
           />
           <TextField
             value={price}
-            name="password"
-            secureTextEntry
-            placeholder="Password"
+            name="price"
+            placeholder="Price"
             onChangeText={this.onChangeText}
           />
           <View>
