@@ -6,8 +6,8 @@ import gql from 'graphql-tag';
 import { TOKEN_KEY } from '../constants';
 
 const refreshTokenMutation = gql`
-  mutation ($token: String!) {
-    refreshToken(token: $token)
+  mutation {
+    refreshToken
   }
 `;
 
@@ -22,11 +22,7 @@ class DefaultRoute extends React.Component {
 
     let response;
     try {
-      response = await this.props.mutate({
-        variables: {
-          token,
-        },
-      });
+      response = await this.props.mutate();
     } catch (err) {
       console.log('error', err)
       this.props.history.push('/signup');
