@@ -1,12 +1,33 @@
 import React, { Component } from 'react';
 import { Font, AppLoading } from 'expo';
+import { AsyncStorage } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { InMemoryCache } from 'apollo-client-preset';
+import { setContext } from 'apollo-link-context';
+import { createHttpLink } from 'apollo-link-http';
 import Routes from './Routes';
+import { TOKEN_KEY } from './constants';
+
+const httpLink = createHttpLink({
+  uri: 'http://10.0.3.2:4000',
+  credentials: 'same-origin',
+});
+
+const authLink = setContext(async (_, { headers }) => {
+  const token = await AsyncStorage.getItem(TOKEN_KEY);
+  console.log(token);
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
 
 const client = new ApolloClient({
   uri: 'http://10.0.3.2:4000',
-  credentials: 'same-origin',
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
 });
 
 class App extends Component {
