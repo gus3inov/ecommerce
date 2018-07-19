@@ -5,6 +5,9 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient, { InMemoryCache } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
+import { Provider } from 'react-redux';
+
+import store from './store';
 import Routes from './Routes';
 import { TOKEN_KEY } from './constants';
 
@@ -55,9 +58,11 @@ class App extends Component {
     }
 
     return (
-      <ApolloProvider client={client}>
-        <Routes />
-      </ApolloProvider>
+      <Provider store={store}>
+        <ApolloProvider client={client}>
+          <Routes />
+        </ApolloProvider>
+      </Provider>
     );
   }
 }
