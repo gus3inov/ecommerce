@@ -62,6 +62,14 @@ class NewProduct extends Component {
           price,
           picture,
         },
+        update: (store, { data: { createProduct } }) => {
+          // Read the data from our cache for this query.
+          const data = store.readQuery({ query: productsQuery });
+          // Add our comment from the mutation to the end.
+          data.products.push(createProduct);
+          // Write our data back to the cache.
+          store.writeQuery({ query: productsQuery, data });
+        },
       });
     } catch (err) {
       console.log('err happened');
