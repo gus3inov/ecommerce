@@ -1,32 +1,47 @@
-import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
-import {
-  Icon,
-  Button,
-  Text,
-} from 'native-base';
+import React from 'react';
+import { Image, Text, View, Button, FlatList } from 'react-native';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import Screen from '../../ui/templates/Screen';
-import styles from './style';
 
-class Products extends Component {
-  componentDidMount() {
-
+const Products = ({ data: { products }, loading, history }) => {
+  if (loading || !products) {
+    return null;
   }
 
-  render() {
-    return (
-      <Screen title="Products">
-        <Button onPress={() => this.props.history.push('/products/add')} iconLeft light>
-          <Icon name="add" />
-          <Text>
-            { 'Create product' }
-          </Text>
-        </Button>
-      </Screen>
-    );
-  }
-}
+  const productsWithKey = products.map(p => ({
+    ...p,
+    key: p.id,
+  }));
 
-export default Products;
+  console.log(productsWithKey[0]);
+
+  return (
+    <View>
+      <Text style={{ marginTop: 50 }}>this is the products page</Text>
+      <Button title="Create Product" onPress={() => history.push('/products/add')} />
+      <FlatList
+        data={productsWithKey}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.name}</Text>
+            <Text>{item.price}</Text>
+            <Image source={{ uri: item.pictureUrl }} />
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+const productsQuery = gql`
+  {
+    products {
+      id
+      price
+      pictureUrl
+      name
+    }
+  }
+`;
+
+export default graphql(productsQuery)(Products);
