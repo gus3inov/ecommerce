@@ -10,6 +10,8 @@ import { ImagePicker } from 'expo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { ReactNativeFile } from 'apollo-upload-client';
+
+import { productsQuery } from './Products';
 import TextField from '../../ui/atoms/TextField';
 import Screen from '../../ui/templates/Screen';
 import styles from './style';
@@ -27,7 +29,11 @@ const defaultState = {
 const createProductMutation = gql`
   mutation($name: String!, $price: Float!, $picture: Upload!) {
     createProduct(name: $name, price: $price, picture: $picture) {
+      __typename
       id
+      name
+      price
+      pictureUrl
     }
   }
 `
