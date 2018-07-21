@@ -7,11 +7,12 @@ import {
 } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { connect } from 'react-redux';
 
 import Screen from '../../ui/templates/Screen';
 import ProductCard from '../../ui/organisms/ProductCard';
 
-const Products = ({ data: { products }, loading, history }) => {
+const Products = ({ userId, data: { products }, loading, history }) => {
   if (loading || !products) {
     return null;
   }
@@ -24,18 +25,21 @@ const Products = ({ data: { products }, loading, history }) => {
           { 'Create product' }
         </Text>
       </Button>
-      <FlatList
-        keyExtractor={item => item.id}
-        data={products}
-        renderItem={({ item }) => (
-          <ProductCard
-            key={item.id}
-            title={item.name}
-            price={item.price}
-            image={item.pictureUrl}
+      {
+        products.length !== 0 && (
+          <FlatList
+            keyExtractor={item => item.id}
+            data={products}
+            renderItem={({ item }) => (
+              <ProductCard
+                key={item.id}
+                userId={userId}
+                data={item}
+              />
+            )}
           />
-        )}
-      />
+        )
+      }
     </Screen>
   );
 };
@@ -47,8 +51,13 @@ export const productsQuery = gql`
       price
       pictureUrl
       name
+      seller {
+        id
+      }
     }
   }
 `;
 
-export default graphql(productsQuery)(Products);
+export default connect(state => ({
+  userId: state.user.userId
+}))(graphql(productsQuery)(Products));
