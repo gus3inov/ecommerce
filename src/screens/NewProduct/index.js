@@ -11,7 +11,7 @@ import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { ReactNativeFile } from 'apollo-upload-client';
 
-import { productsQuery } from './Products';
+import { productsQuery } from '../Products';
 import TextField from '../../ui/atoms/TextField';
 import Screen from '../../ui/templates/Screen';
 import styles from './style';
@@ -54,7 +54,7 @@ class NewProduct extends Component {
       type: 'image/png',
       name: 'i-am-a-name',
     });
-  console.log('picture client ', picture)
+
     try {
       await this.props.mutate({
         variables: {
