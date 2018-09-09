@@ -8,6 +8,7 @@ import {
   Button,
   Text,
 } from 'native-base';
+import { TOKEN_KEY } from '../../constants';
 import Screen from '../../ui/templates/Screen';
 
 class Profile extends Component {
@@ -15,12 +16,18 @@ class Profile extends Component {
 
   }
 
+  logout = () => {
+    AsyncStorage.setItem(TOKEN_KEY, '');
+  }
+
   render() {
     return (
       <Screen title="Profile">
-        <Text>
-          { 'Profile' }
-        </Text>
+        <Button onClick={this.logout}>
+          <Text>
+            { 'Logout' }
+          </Text>
+        </Button>
       </Screen>
     );
   }
