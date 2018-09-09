@@ -23,6 +23,7 @@ const refreshTokenMutation = gql`
 class DefaultRoute extends React.Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
+    console.log(token)
     if(!token) {
       this.props.history.push('/signup');
       return;
@@ -38,7 +39,7 @@ class DefaultRoute extends React.Component {
     }
 
     const { refreshToken: { token: newToken, userId } } = response.data;
-    await AsyncStorage.setItem(TOKEN_KEY, newToken);
+    await AsyncStorage.setItem(TOKEN_KEY, '');
     this.props.addUserAction({ userId });
     this.props.history.push('/products');
   }
