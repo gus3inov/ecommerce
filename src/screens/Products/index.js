@@ -16,7 +16,7 @@ const Products = ({ userId, data: { products }, loading, history }) => {
   if (loading || !products) {
     return null;
   }
-  console.log(products)
+
   return (
     <Screen title="Products">
       <Button onPress={() => history.push('/products/add')} iconLeft light>
