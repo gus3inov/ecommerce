@@ -12,7 +12,7 @@ import Routes from './Routes';
 import { TOKEN_KEY } from './constants';
 
 const httpLink = createHttpLink({
-  uri: 'http://10.0.3.2:4000',
+  uri: 'http://10.0.3.2:4000/graphql',
   credentials: 'same-origin',
 });
 
