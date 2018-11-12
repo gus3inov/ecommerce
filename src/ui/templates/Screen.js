@@ -12,12 +12,11 @@ class Screen extends Component {
   }
 
   handleBack = () => {
-    console.log('back');
     this.props.history.goBack();
   };
 
   handleOpenMenu = () => {
-    console.log('back');
+    console.log('open menu');
   };
 
   render() {
