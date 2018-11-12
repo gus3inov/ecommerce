@@ -5,6 +5,7 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient, { InMemoryCache } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
+import { createUploadLink } from 'apollo-upload-client';
 import { Provider } from 'react-redux';
 
 import store from './store';
@@ -14,6 +15,10 @@ import { TOKEN_KEY } from './constants';
 const httpLink = createHttpLink({
   uri: 'http://10.0.3.2:4000/graphql',
   credentials: 'same-origin',
+});
+
+const uploadLink = createUploadLink({
+  uri: 'http://10.0.3.2:4000/graphql',
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -28,7 +33,7 @@ const authLink = setContext(async (_, { headers }) => {
 
 const client = new ApolloClient({
   uri: 'http://10.0.3.2:4000',
-  link: authLink.concat(httpLink),
+  link: authLink.concat(httpLink).concat(uploadLink),
   cache: new InMemoryCache(),
 });
 
