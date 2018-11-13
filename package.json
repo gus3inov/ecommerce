@@ -27,7 +27,6 @@
     "@expo/vector-icons": "^6.3.1",
     "apollo-client-preset": "^1.0.8",
     "apollo-link-context": "^1.0.8",
-    "apollo-link-http": "^1.5.4",
     "apollo-upload-client": "^8.1.0",
     "eslint-config-airbnb": "^17.0.0",
     "expo": "^25.0.0",
