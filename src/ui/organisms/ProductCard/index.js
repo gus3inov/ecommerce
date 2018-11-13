@@ -21,27 +21,27 @@ const ProductCard = (props) => {
   } = props;
   const {
     id,
-    title,
+    name,
     price,
-    image,
+    pictureUrl,
     seller,
   } = data;
-
+  console.log('product', pictureUrl);
   return (
     <Card>
       <CardItem>
         <Left>
-          <Thumbnail
-            source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6l4GnWbN18Dz5i1kjlSRJTFcfO4lru1MXAhjxKtcT-cfumC50'}}/>
+          {/* <Thumbnail
+            source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6l4GnWbN18Dz5i1kjlSRJTFcfO4lru1MXAhjxKtcT-cfumC50'}}/> */}
           <Body>
-          <Text>{title}</Text>
-          <Text note>GeekyAnts</Text>
+          <Text>{name}</Text>
+          {/* <Text note>GeekyAnts</Text> */}
           </Body>
         </Left>
       </CardItem>
       <CardItem cardBody>
         <Image
-          source={{uri: `http://headphone-review.ru/wp-content/uploads/2018/05/Yandex-Station.jpg`}}
+          source={{uri: `http://10.0.3.2:4000/${pictureUrl}`}}
           style={{height: 200, width: null, flex: 1}}
         />
       </CardItem>
