@@ -1,36 +1,11 @@
 import React, { Component } from 'react';
 import { Font, AppLoading } from 'expo';
-import { AsyncStorage } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
-import ApolloClient, { InMemoryCache } from 'apollo-client-preset';
-import { setContext } from 'apollo-link-context';
-import { createUploadLink } from 'apollo-upload-client';
 import { Provider } from 'react-redux';
+import client from './utils/apolloSetup';
 
 import store from './store';
 import Routes from './Routes';
-import { TOKEN_KEY } from './constants';
-
-const uploadLink = createUploadLink({
-  uri: 'http://10.0.3.2:4000/graphql',
-  credentials: 'same-origin'
-});
-
-const authLink = setContext(async (_, { headers }) => {
-  const token = await AsyncStorage.getItem(TOKEN_KEY);
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
-
-const client = new ApolloClient({
-  uri: 'http://10.0.3.2:4000',
-  link: authLink.concat(uploadLink),
-  cache: new InMemoryCache(),
-});
 
 class App extends Component {
   state = {
