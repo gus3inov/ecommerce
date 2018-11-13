@@ -4,7 +4,6 @@ import { AsyncStorage } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient, { InMemoryCache } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
-import { createHttpLink } from 'apollo-link-http';
 import { createUploadLink } from 'apollo-upload-client';
 import { Provider } from 'react-redux';
 
@@ -12,13 +11,9 @@ import store from './store';
 import Routes from './Routes';
 import { TOKEN_KEY } from './constants';
 
-const httpLink = createHttpLink({
-  uri: 'http://10.0.3.2:4000/graphql',
-  credentials: 'same-origin',
-});
-
 const uploadLink = createUploadLink({
   uri: 'http://10.0.3.2:4000/graphql',
+  credentials: 'same-origin'
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -33,7 +28,7 @@ const authLink = setContext(async (_, { headers }) => {
 
 const client = new ApolloClient({
   uri: 'http://10.0.3.2:4000',
-  link: authLink.concat(httpLink).concat(uploadLink),
+  link: authLink.concat(uploadLink),
   cache: new InMemoryCache(),
 });
 
