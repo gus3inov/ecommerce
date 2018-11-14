@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Font, AppLoading } from 'expo';
 import { ApolloProvider } from 'react-apollo';
-import { Provider } from 'react-redux';
 import client from './utils/apolloSetup';
 
-import store from './store';
 import Routes from './Routes';
 
 class App extends Component {
@@ -32,11 +30,9 @@ class App extends Component {
     }
 
     return (
-      <Provider store={store}>
-        <ApolloProvider client={client}>
-          <Routes />
-        </ApolloProvider>
-      </Provider>
+      <ApolloProvider client={client}>
+        <Routes />
+      </ApolloProvider>
     );
   }
 }
