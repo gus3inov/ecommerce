@@ -21,11 +21,10 @@ const stateLink = withClientState({
   cache: new InMemoryCache(),
   resolvers: {
     Mutation: {
-      updateNetworkStatus: (_, { isConnected }, { cache }) => {
+      addUserId: (_, { userId }, { cache }) => {
         const data = {
-          networkStatus: {
-            __typename: 'NetworkStatus',
-            isConnected
+          getUserId: {
+            userId,
           },
         };
         cache.writeData({ data });
