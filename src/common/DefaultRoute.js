@@ -1,13 +1,10 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Container, Content, Spinner } from 'native-base';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { TOKEN_KEY } from 'ecommerce-client/src/constants';
-import { addUser } from 'ecommerce-client/src/reducers/user';
 
 const refreshTokenMutation = gql`
   mutation {
@@ -18,8 +15,16 @@ const refreshTokenMutation = gql`
   }
 `;
 
-@connect(null, dispatch => bindActionCreators({ addUserAction: addUser }, dispatch))
-@graphql(refreshTokenMutation)
+const addUserIdMutation = gql`
+  mutation($userId: String!) {
+    addUserId(userId: $userId) @client
+  }
+`;
+
+@compose(
+  graphql(refreshTokenMutation),
+  graphql(addUserIdMutation, { name: 'addUserId' }),
+)
 class DefaultRoute extends React.Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
@@ -40,7 +45,11 @@ class DefaultRoute extends React.Component {
 
     const { refreshToken: { token: newToken, userId } } = response.data;
     await AsyncStorage.setItem(TOKEN_KEY, newToken);
-    this.props.addUserAction({ userId });
+    await this.props.addUserId({
+      variables: {
+        userId,
+      }
+    })
     this.props.history.push('/products');
   }
 
