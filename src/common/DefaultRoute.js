@@ -6,8 +6,8 @@ import gql from 'graphql-tag';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { TOKEN_KEY } from '../constants';
-import { addUser } from '../reducers/user';
+import { TOKEN_KEY } from 'ecommerce-client/src/constants';
+import { addUser } from 'ecommerce-client/src/reducers/user';
 
 const refreshTokenMutation = gql`
   mutation {
