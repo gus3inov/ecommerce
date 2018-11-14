@@ -7,7 +7,6 @@ import {
 } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { connect } from 'react-redux';
 
 import Screen from 'ecommerce-client/src/ui/templates/Screen';
 import ProductCard from 'ecommerce-client/src/ui/organisms/ProductCard';
@@ -58,6 +57,4 @@ export const productsQuery = gql`
   }
 `;
 
-export default connect(state => ({
-  userId: state.user.userId
-}))(graphql(productsQuery)(Products));
+export default graphql(productsQuery)(Products);
