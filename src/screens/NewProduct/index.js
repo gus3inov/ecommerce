@@ -11,9 +11,9 @@ import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { ReactNativeFile } from 'apollo-upload-client';
 
-import { productsQuery } from '../Products';
-import TextField from '../../ui/atoms/TextField';
-import Screen from '../../ui/templates/Screen';
+import { productsQuery } from 'ecommerce-client/src/screens/Products';
+import TextField from 'ecommerce-client/src/ui/atoms/TextField';
+import Screen from 'ecommerce-client/src/ui/templates/Screen';
 import styles from './style';
 
 const defaultState = {
