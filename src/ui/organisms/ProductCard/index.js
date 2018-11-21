@@ -18,13 +18,14 @@ const ProductCard = (props) => {
   const {
     userId,
     data,
+    handleDelete,
   } = props;
   const {
     id,
     name,
     price,
     pictureUrl,
-    seller,
+    showButtons
   } = data;
   console.log('product', pictureUrl);
   return (
@@ -60,7 +61,7 @@ const ProductCard = (props) => {
         </Body>
       </CardItem>
       {
-        userId === seller.id ?
+        showButtons ?
           <CardItem>
             <Left>
               <Button transparent>
@@ -69,7 +70,10 @@ const ProductCard = (props) => {
               </Button>
             </Left>
             <Right>
-              <Button transparent>
+              <Button
+                onPress={() => handleDelete(id)}
+                transparent
+              >
                 <Icon active name="trash" />
                 <Text>{'Delete'}</Text>
               </Button>
