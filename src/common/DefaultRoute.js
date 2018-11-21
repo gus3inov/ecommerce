@@ -10,20 +10,13 @@ const refreshTokenMutation = gql`
   mutation {
     refreshToken {
       token
-      userId
     }
   }
 `;
 
-const addUserIdMutation = gql`
-  mutation($userId: String!) {
-    addUserId(userId: $userId) @client
-  }
-`;
 
 @compose(
   graphql(refreshTokenMutation),
-  graphql(addUserIdMutation, { name: 'addUserId' }),
 )
 class DefaultRoute extends React.Component {
   async componentDidMount() {
@@ -43,13 +36,8 @@ class DefaultRoute extends React.Component {
       return;
     }
 
-    const { refreshToken: { token: newToken, userId } } = response.data;
+    const { refreshToken: { token: newToken } } = response.data;
     await AsyncStorage.setItem(TOKEN_KEY, newToken);
-    await this.props.addUserId({
-      variables: {
-        userId,
-      }
-    })
     this.props.history.push('/products');
   }
 
