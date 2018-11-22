@@ -19,6 +19,7 @@ const ProductCard = (props) => {
     userId,
     data,
     handleDelete,
+    handleRecord,
   } = props;
   const {
     id,
@@ -64,7 +65,10 @@ const ProductCard = (props) => {
         showButtons ?
           <CardItem>
             <Left>
-              <Button transparent>
+              <Button
+                onPress={() => handleRecord(data)}
+                transparent
+              >
                 <Icon active name="create" />
                 <Text>{'Edit'}</Text>
               </Button>
