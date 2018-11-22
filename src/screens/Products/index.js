@@ -72,6 +72,11 @@ class Products extends React.Component {
     })
   }
 
+  recordProduct = (data) => this.props.history.push({
+    pathname: `products/record/${data.id}`,
+    state: data,
+  })
+
   render() {
     const { data: { products }, loading, history } = this.props;
     const { userId } = this.state;
@@ -100,6 +105,7 @@ class Products extends React.Component {
                   key={item.id}
                   userId={userId}
                   data={item}
+                  handleRecord={this.recordProduct}
                   handleDelete={this.deleteProduct}
                 />
               )}
