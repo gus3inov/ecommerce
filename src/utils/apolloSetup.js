@@ -47,7 +47,7 @@ export const authLink = setContext(async (_, {
 });
 
 const client = new ApolloClient({
-  uri: 'http://10.0.3.2:4000',
+  uri: 'http://10.0.3.2:4000/graphql',
   link: ApolloLink.from([
     stateLink,
     authLink,
