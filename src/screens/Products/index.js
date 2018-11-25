@@ -1,16 +1,22 @@
 import React from 'react';
-import { FlatList, AsyncStorage } from 'react-native';
+import { FlatList, AsyncStorage, View } from 'react-native';
 import {
   Icon,
   Button,
   Text,
+  Container,
+  Header,
+  Item,
+  Input,
 } from 'native-base';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import jwtDecode from 'jwt-decode';
 import Screen from 'ecommerce-client/src/ui/templates/Screen';
 import ProductCard from 'ecommerce-client/src/ui/organisms/ProductCard';
+import TextField from 'ecommerce-client/src/ui/atoms/TextField';
 import { TOKEN_KEY } from 'ecommerce-client/src/constants';
+import styles from './style';
 
 export const productsQuery = gql`
   {
@@ -42,6 +48,7 @@ export const deleteProductMutation = gql`
 class Products extends React.Component {
   state = {
       userId: null,
+      searchValue: '',
   };
 
   async componentDidMount() {
@@ -77,16 +84,44 @@ class Products extends React.Component {
     state: data,
   })
 
+  onChangeText = (key, value) => {
+    this.setState(state => ({
+      values: {
+        ...state.values,
+        [key]: value,
+      },
+    }));
+  }
+
+  handleSearch = (value) => {
+
+  };
+
   render() {
     const { data: { products }, loading, history } = this.props;
-    const { userId } = this.state;
+    const { userId, searchValue } = this.state;
     if (loading || !products) {
       return null;
     }
 
     return (
       <Screen title="Products">
-        <Button onPress={() => history.push('/products/add')} iconLeft light>
+        <Header searchBar rounded>
+            <Item>
+              <Icon name="ios-search" />
+              <Input placeholder="Search" />
+              <Icon name="ios-people" />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+          </Header>
+          <Button
+            style={styles.createButton}
+            onPress={() => history.push('/products/add')}
+            iconLeft
+            light
+          >
           <Icon name="add" />
           <Text>
             { 'Create product' }
