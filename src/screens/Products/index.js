@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, AsyncStorage, View } from 'react-native';
+import { FlatList, AsyncStorage, Picker } from 'react-native';
 import {
   Icon,
   Button,
@@ -16,11 +16,10 @@ import Screen from 'ecommerce-client/src/ui/templates/Screen';
 import ProductCard from 'ecommerce-client/src/ui/organisms/ProductCard';
 import TextField from 'ecommerce-client/src/ui/atoms/TextField';
 import { TOKEN_KEY } from 'ecommerce-client/src/constants';
-import styles from './style';
 
 export const productsQuery = gql`
-  {
-    products {
+  query($orderBy: ProductOrderByInput, $where: ProductWhereInput) {
+    products(orderBy: $orderBy, where: $where) {
       id
       price
       pictureUrl
@@ -49,6 +48,7 @@ class Products extends React.Component {
   state = {
       userId: null,
       searchValue: '',
+      sort: 'name',
   };
 
   async componentDidMount() {
@@ -84,22 +84,43 @@ class Products extends React.Component {
     state: data,
   })
 
-  onChangeText = (key, value) => {
-    this.setState(state => ({
-      values: {
-        ...state.values,
-        [key]: value,
-      },
-    }));
+  onChangeText = (value) => {
+    const { data: { refetch } } = this.props;
+    this.setState({
+      searchValue: value,
+    })
+    refetch({
+      where: {
+        name_contains: value,
+      }
+    })
   }
 
   handleSearch = (value) => {
 
   };
 
+  handleSort = (value) => {
+    const { data: { refetch, variables } } = this.props;
+
+    if(value === 'name') {
+      refetch({
+        orderBy: variables.orderBy === 'name_ASC' ? 'name_DESC' : 'name _ASC'
+      })
+    } else {
+        refetch({
+          orderBy: variables.orderBy === 'price_ASC' ? 'price_DESC' : 'price_ASC'
+        })
+    }
+
+    this.setState({
+      sort: value,
+    })
+  };
+
   render() {
-    const { data: { products }, loading, history } = this.props;
-    const { userId, searchValue } = this.state;
+    const { data: { products, refetch }, loading, history } = this.props;
+    const { userId, searchValue, sort } = this.state;
     if (loading || !products) {
       return null;
     }
@@ -108,16 +129,19 @@ class Products extends React.Component {
       <Screen title="Products">
         <Header searchBar rounded>
             <Item>
-              <Icon name="ios-search" />
-              <Input placeholder="Search" />
+              <Icon
+                name="ios-search"
+              />
+              <Input
+                placeholder="Search"
+                name="search"
+                value={searchValue}
+                onChangeText={this.onChangeText}
+              />
               <Icon name="ios-people" />
             </Item>
-            <Button transparent>
-              <Text>Search</Text>
-            </Button>
           </Header>
           <Button
-            style={styles.createButton}
             onPress={() => history.push('/products/add')}
             iconLeft
             light
@@ -127,6 +151,14 @@ class Products extends React.Component {
             { 'Create product' }
           </Text>
         </Button>
+        <Picker
+            selectedValue={sort}
+            style={{ height: 50, width: 100 }}
+            onValueChange={this.handleSort}
+          >
+            <Picker.Item label="Name" value="name" />
+            <Picker.Item label="Price" value="price" />
+        </Picker>
         {
           products.length !== 0 && (
             <FlatList
