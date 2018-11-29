@@ -76,21 +76,15 @@ class Products extends React.Component {
   }
 
   deleteProduct = async (id) => {
-    const { deleteProduct } = this.props;
+    const { deleteProduct, data: { variables } } = this.props;
     await deleteProduct({
       variables: {
         id,
       },
       update: (store) => {
-        const data = store.readQuery({ query: productsQuery });
-        const updateProducts = data.products.filter(x => x.id !== id);
-        store.writeQuery({
-          query: productsQuery,
-          data: {
-            ...data,
-            products: updateProducts,
-          }
-        });
+        const data = store.readQuery({ query: productsQuery, variables });
+        data.productsConnection.edges = data.productsConnection.edges.filter(x => x.node.id !== id);
+        store.writeQuery({ query: productsQuery, data, variables });
       },
     })
   }
@@ -135,16 +129,13 @@ class Products extends React.Component {
   };
 
   handleEndReached = () => {
-    const { data: { productsConnection, fetchMore }} = this.props;
-      console.log('on end');
-      
-      if (productsConnection.pageInfo.hasNextPage) {
+    const { data: { productsConnection, fetchMore }, loading} = this.props;      
+      if (!loading && productsConnection.pageInfo.hasNextPage) {
         fetchMore({
           variables: {
             after: productsConnection.pageInfo.endCursor,
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
-            console.log('update query')
             if(!fetchMoreResult) {
               return previousResult;
             }
@@ -165,7 +156,7 @@ class Products extends React.Component {
   };
 
   render() {
-    const { data: { productsConnection }, loading, history } = this.props;
+    const { data: { productsConnection, variables }, loading, history } = this.props;
     const { userId, searchValue, sort } = this.state;
     if (loading || !productsConnection) {
       return null;
@@ -188,7 +179,10 @@ class Products extends React.Component {
             </Item>
           </Header>
           <Button
-            onPress={() => history.push('/products/add')}
+            onPress={() => history.push({
+              pathname: '/products/add',
+              state: variables,
+            })}
             iconLeft
             light
           >
