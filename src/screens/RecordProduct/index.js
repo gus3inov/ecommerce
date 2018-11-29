@@ -53,8 +53,7 @@ class RecordProduct extends Component {
             },
           });
         } catch (err) {
-          console.log('err happened');
-          console.log(err);
+          console.error(err);
           return;
         }
     
