@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, AsyncStorage, Picker } from 'react-native';
+import { FlatList, AsyncStorage, Picker, ActivityIndicator } from 'react-native';
 import {
   Icon,
   Button,
@@ -18,14 +18,22 @@ import TextField from 'ecommerce-client/src/ui/atoms/TextField';
 import { TOKEN_KEY } from 'ecommerce-client/src/constants';
 
 export const productsQuery = gql`
-  query($orderBy: ProductOrderByInput, $where: ProductWhereInput) {
-    products(orderBy: $orderBy, where: $where) {
-      id
-      price
-      pictureUrl
-      name
-      seller {
-        id
+  query($after: String, $orderBy: ProductOrderByInput, $where: ProductWhereInput) {
+    productsConnection (after: $after, first: 5, orderBy: $orderBy, where: $where) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          id
+          price
+          pictureUrl
+          name
+          seller {
+            id
+          }
+        }
       }
     }
   }
@@ -41,10 +49,18 @@ export const deleteProductMutation = gql`
 
 
 @compose(
-  graphql(productsQuery),
+  graphql(productsQuery, {
+    options: {
+      variables: {
+        orderBy: 'createdAt_ASC',
+      },
+    },
+  }),
   graphql(deleteProductMutation, { name: 'deleteProduct' })
 )
 class Products extends React.Component {
+  calledOnce = false;
+
   state = {
       userId: null,
       searchValue: '',
@@ -118,10 +134,40 @@ class Products extends React.Component {
     })
   };
 
+  handleEndReached = () => {
+    const { data: { productsConnection, fetchMore }} = this.props;
+      console.log('on end');
+      
+      if (productsConnection.pageInfo.hasNextPage) {
+        fetchMore({
+          variables: {
+            after: productsConnection.pageInfo.endCursor,
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            console.log('update query')
+            if(!fetchMoreResult) {
+              return previousResult;
+            }
+  
+            return {
+              productsConnection: {
+                __typename: 'ProductConnection',
+                pageInfo: fetchMoreResult.productsConnection.pageInfo,
+                edges: [
+                  ...previousResult.productsConnection.edges,
+                  ...fetchMoreResult.productsConnection.edges,
+                ]
+              },
+            }
+          }
+        })
+      }
+  };
+
   render() {
-    const { data: { products, refetch }, loading, history } = this.props;
+    const { data: { productsConnection }, loading, history } = this.props;
     const { userId, searchValue, sort } = this.state;
-    if (loading || !products) {
+    if (loading || !productsConnection) {
       return null;
     }
 
@@ -160,12 +206,14 @@ class Products extends React.Component {
             <Picker.Item label="Price" value="price" />
         </Picker>
         {
-          products.length !== 0 && (
+          productsConnection.edges.length !== 0 && (
             <FlatList
               keyExtractor={item => item.id}
-              data={products.map(x => ({
-                ...x,
-                showButtons: userId === x.seller.id,
+              ListFooterComponent={() => productsConnection.pageInfo.hasNextPage && <ActivityIndicator size="large" color="#00ff00" />}
+              onEndReached={this.handleEndReached}
+              data={productsConnection.edges.map(x => ({
+                ...x.node,
+                showButtons: userId === x.node.seller.id,
               }))}
               renderItem={({ item }) => (
                 <ProductCard
