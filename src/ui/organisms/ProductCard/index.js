@@ -28,7 +28,7 @@ const ProductCard = (props) => {
     pictureUrl,
     showButtons
   } = data;
-  console.log('product', pictureUrl);
+
   return (
     <Card>
       <CardItem>
