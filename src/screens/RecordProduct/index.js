@@ -29,7 +29,7 @@ class RecordProduct extends Component {
         let picture = null;
     
         const { state } = this.props.location;
-    
+
         if (state.pictureUrl !== pictureUrl) {
           picture = new ReactNativeFile({
             uri: pictureUrl,
@@ -47,9 +47,13 @@ class RecordProduct extends Component {
               picture,
             },
             update: (store, { data: { updateProduct } }) => {
-              const data = store.readQuery({ query: productsQuery });
-              data.products = data.products.map(x => (x.id === updateProduct.id ? updateProduct : x));
-              store.writeQuery({ query: productsQuery, data });
+              const data = store.readQuery({ query: productsQuery, variables: state.variables });
+              data.productsConnection.edges = data.productsConnection.edges.map(x => (x.node.id === updateProduct.id  ? ({
+                __typename: 'Node',
+                cursor: updateProduct.id,
+                node: updateProduct,
+              }) : x));
+              store.writeQuery({ query: productsQuery, data, variables: state.variables });
             },
           });
         } catch (err) {
