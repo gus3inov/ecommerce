@@ -32,6 +32,8 @@ class NewProduct extends Component {
       name: 'i-am-a-name',
     });
 
+    const { state } = this.props.location;
+    console.log('state', state);
     try {
       await this.props.mutate({
         variables: {
@@ -40,9 +42,14 @@ class NewProduct extends Component {
           picture,
         },
         update: (store, { data: { createProduct } }) => {
-          const data = store.readQuery({ query: productsQuery });
+          const data = store.readQuery({ query: productsQuery, variables: state.variables });
+          data.productsConnection.edges = [{
+            __typename: 'Node',
+            cursor: createProduct.id,
+            node: createProduct,
+          }, ...data.productsConnection.edges]
           data.products.push(createProduct);
-          store.writeQuery({ query: productsQuery, data });
+          store.writeQuery({ query: productsQuery, data, variables: state.variables });
         },
       });
     } catch (err) {
