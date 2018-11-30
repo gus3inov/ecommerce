@@ -1,20 +1,13 @@
-import ApolloClient, {
-  InMemoryCache,
-  ApolloLink,
-} from 'apollo-client-preset';
-import {
-  setContext
-} from 'apollo-link-context';
+import ApolloClient, { InMemoryCache, ApolloLink } from 'apollo-client-preset';
+import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
-import {
-  createUploadLink
-} from 'apollo-upload-client';
+import { createUploadLink } from 'apollo-upload-client';
 import { AsyncStorage } from 'react-native';
 import { TOKEN_KEY } from '../constants';
 
 export const uploadLink = createUploadLink({
   uri: 'http://10.0.3.2:4000/graphql',
-  credentials: 'same-origin'
+  credentials: 'same-origin',
 });
 
 const stateLink = withClientState({
@@ -31,12 +24,10 @@ const stateLink = withClientState({
         return null;
       },
     },
-  }
+  },
 });
 
-export const authLink = setContext(async (_, {
-  headers
-}) => {
+export const authLink = setContext(async (_, { headers }) => {
   const token = await AsyncStorage.getItem(TOKEN_KEY);
   return {
     headers: {
@@ -48,11 +39,7 @@ export const authLink = setContext(async (_, {
 
 const client = new ApolloClient({
   uri: 'http://10.0.3.2:4000/graphql',
-  link: ApolloLink.from([
-    stateLink,
-    authLink,
-    uploadLink
-  ]),
+  link: ApolloLink.from([stateLink, authLink, uploadLink]),
   cache: new InMemoryCache(),
 });
 
