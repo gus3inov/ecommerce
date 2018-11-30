@@ -14,15 +14,12 @@ const refreshTokenMutation = gql`
   }
 `;
 
-
-@compose(
-  graphql(refreshTokenMutation),
-)
+@compose(graphql(refreshTokenMutation))
 class DefaultRoute extends React.Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
 
-    if(!token) {
+    if (!token) {
       this.props.history.push('/signup');
       return;
     }
@@ -31,12 +28,13 @@ class DefaultRoute extends React.Component {
     try {
       response = await this.props.mutate();
     } catch (err) {
-
       this.props.history.push('/signup');
       return;
     }
 
-    const { refreshToken: { token: newToken } } = response.data;
+    const {
+      refreshToken: { token: newToken },
+    } = response.data;
     await AsyncStorage.setItem(TOKEN_KEY, newToken);
     this.props.history.push('/products');
   }
@@ -45,7 +43,7 @@ class DefaultRoute extends React.Component {
     return (
       <Container>
         <Content>
-          <Spinner  color="red" />
+          <Spinner color="red" />
         </Content>
       </Container>
     );
