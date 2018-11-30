@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import {
-  Form,
-  Button,
-  Text,
-} from 'native-base';
+import { Form, Button, Text } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import TextField from '../../ui/atoms/TextField';
@@ -13,8 +9,8 @@ import styles from './style';
 import { TOKEN_KEY } from '../../constants';
 
 const signUpMutation = gql`
-  mutation($name: String!, $email: String!, $password: String!){
-    signup(name: $name, email: $email, password: $password){
+  mutation($name: String!, $email: String!, $password: String!) {
+    signup(name: $name, email: $email, password: $password) {
       token
     }
   }
@@ -35,7 +31,7 @@ class Signup extends Component {
   state = defaultState;
 
   submit = async () => {
-    if(this.state.isSubmitting) {
+    if (this.state.isSubmitting) {
       return;
     }
     this.setState({ isSubmitting: true });
@@ -74,7 +70,10 @@ class Signup extends Component {
   };
 
   render() {
-    const { errors, values: { name, email, password } } = this.state;
+    const {
+      errors,
+      values: { name, email, password },
+    } = this.state;
 
     return (
       <Screen title="Signup">
@@ -85,11 +84,7 @@ class Signup extends Component {
             placeholder="Username"
             onChangeText={this.onChangeText}
           />
-          {errors.email
-          && <Text>
-            {errors.email}
-          </Text>
-          }
+          {errors.email && <Text>{errors.email}</Text>}
           <TextField
             value={email}
             name="email"
@@ -103,25 +98,12 @@ class Signup extends Component {
             placeholder="Password"
             onChangeText={this.onChangeText}
           />
-          <Button
-            onPress={this.submit}
-            full
-            success
-          >
-            <Text>
-              { 'Submit' }
-            </Text>
+          <Button onPress={this.submit} full success>
+            <Text>{'Submit'}</Text>
           </Button>
-          <Text style={styles.textOr}>
-            { 'or' }
-          </Text>
-          <Button
-            onPress={this.redirectLoginPage}
-            full
-          >
-            <Text>
-              { 'Login' }
-            </Text>
+          <Text style={styles.textOr}>{'or'}</Text>
+          <Button onPress={this.redirectLoginPage} full>
+            <Text>{'Login'}</Text>
           </Button>
         </Form>
       </Screen>
