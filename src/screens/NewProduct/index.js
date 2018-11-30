@@ -20,11 +20,11 @@ const createProductMutation = gql`
       }
     }
   }
-`
+`;
 
 @graphql(createProductMutation)
 class NewProduct extends Component {
-  submit = async (values) => {
+  submit = async values => {
     const { pictureUrl, name, price } = values;
     const picture = new ReactNativeFile({
       uri: pictureUrl,
@@ -42,14 +42,24 @@ class NewProduct extends Component {
           picture,
         },
         update: (store, { data: { createProduct } }) => {
-          const data = store.readQuery({ query: productsQuery, variables: state.variables });
-          data.productsConnection.edges = [{
-            __typename: 'Node',
-            cursor: createProduct.id,
-            node: createProduct,
-          }, ...data.productsConnection.edges]
+          const data = store.readQuery({
+            query: productsQuery,
+            variables: state.variables,
+          });
+          data.productsConnection.edges = [
+            {
+              __typename: 'Node',
+              cursor: createProduct.id,
+              node: createProduct,
+            },
+            ...data.productsConnection.edges,
+          ];
           data.products.push(createProduct);
-          store.writeQuery({ query: productsQuery, data, variables: state.variables });
+          store.writeQuery({
+            query: productsQuery,
+            data,
+            variables: state.variables,
+          });
         },
       });
     } catch (err) {
@@ -63,9 +73,7 @@ class NewProduct extends Component {
   render() {
     return (
       <Screen title="Create Product">
-        <Form
-          submit={this.submit}
-        />
+        <Form submit={this.submit} />{' '}
       </Screen>
     );
   }
