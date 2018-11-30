@@ -7,9 +7,7 @@ import { FooterNav, Header } from '../organisms';
 class Screen extends Component {
   static propTypes = {};
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   handleBack = () => {
     this.props.history.goBack();
@@ -29,7 +27,7 @@ class Screen extends Component {
           handleBack={this.handleBack}
           handleOpenMenu={this.handleOpenMenu}
         />
-        { children }
+        {children}
         <FooterNav />
       </Container>
     );

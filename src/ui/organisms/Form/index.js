@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Form as NativeForm,
-  Button,
-  Text,
-  View,
-} from 'native-base';
+import { Form as NativeForm, Button, Text, View } from 'native-base';
 import { Image } from 'react-native';
 import { ImagePicker } from 'expo';
 import TextField from 'ecommerce-client/src/ui/atoms/TextField';
@@ -24,11 +19,11 @@ class Form extends Component {
     super(props);
     const { initialValues } = this.props;
     this.state = {
+      ...defaultState,
+      values: {
         ...defaultState,
-        values: {
-            ...defaultState,
-            ...initialValues,
-        }
+        ...initialValues,
+      },
     };
   }
 
@@ -66,42 +61,39 @@ class Form extends Component {
   };
 
   render() {
-    const { values: { name, pictureUrl, price } } = this.state;
+    const {
+      values: { name, pictureUrl, price },
+    } = this.state;
 
     return (
-        <NativeForm>
-          <TextField
-            value={name}
-            name="name"
-            placeholder="Name"
-            onChangeText={this.onChangeText}
-          />
-          <TextField
-            value={price}
-            name="price"
-            placeholder="Price"
-            onChangeText={this.onChangeText}
-          />
-          <View>
-            <Button onPress={this.pickImage}>
-              <Text>
-                { 'Pick an image from camera roll' }
-              </Text>
-            </Button>
-            {pictureUrl && (
-              <Image source={{ uri: pictureUrl }} style={{ width: 200, height: 200 }} />
-            )}
-          </View>
-          <Button
-            onPress={this.submit}
-            full
-            success
-          >
-            <Text>
-              { 'Add product' }
-            </Text>
+      <NativeForm>
+        <TextField
+          value={name}
+          name="name"
+          placeholder="Name"
+          onChangeText={this.onChangeText}
+        />
+        <TextField
+          value={price}
+          name="price"
+          placeholder="Price"
+          onChangeText={this.onChangeText}
+        />
+        <View>
+          <Button onPress={this.pickImage}>
+            <Text>{'Pick an image from camera roll'}</Text>
           </Button>
-        </NativeForm>
+          {pictureUrl && (
+            <Image
+              source={{ uri: pictureUrl }}
+              style={{ width: 200, height: 200 }}
+            />
+          )}
+        </View>
+        <Button onPress={this.submit} full success>
+          <Text>{'Add product'}</Text>
+        </Button>
+      </NativeForm>
     );
   }
 }
