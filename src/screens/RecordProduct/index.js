@@ -24,58 +24,71 @@ const editProductMutation = gql`
 
 @graphql(editProductMutation)
 class RecordProduct extends Component {
-    submit = async (values) => {
-        const { pictureUrl, name, price } = values;
-        let picture = null;
-    
-        const { state } = this.props.location;
+  submit = async values => {
+    const { pictureUrl, name, price } = values;
+    let picture = null;
 
-        if (state.pictureUrl !== pictureUrl) {
-          picture = new ReactNativeFile({
-            uri: pictureUrl,
-            type: 'image/png',
-            name: 'i-am-a-name',
-          });
-        }
-  
-        try {
-          await this.props.mutate({
-            variables: {
-              id: state.id,
-              name,
-              price,
-              picture,
-            },
-            update: (store, { data: { updateProduct } }) => {
-              const data = store.readQuery({ query: productsQuery, variables: state.variables });
-              data.productsConnection.edges = data.productsConnection.edges.map(x => (x.node.id === updateProduct.id  ? ({
-                __typename: 'Node',
-                cursor: updateProduct.id,
-                node: updateProduct,
-              }) : x));
-              store.writeQuery({ query: productsQuery, data, variables: state.variables });
-            },
-          });
-        } catch (err) {
-          console.error(err);
-          return;
-        }
-    
-        this.props.history.push('/products');
-      };
+    const { state } = this.props.location;
 
-      render() {
-    const { location: { state } } = this.props;
-      
+    if (state.pictureUrl !== pictureUrl) {
+      picture = new ReactNativeFile({
+        uri: pictureUrl,
+        type: 'image/png',
+        name: 'i-am-a-name',
+      });
+    }
+
+    try {
+      await this.props.mutate({
+        variables: {
+          id: state.id,
+          name,
+          price,
+          picture,
+        },
+        update: (store, { data: { updateProduct } }) => {
+          const data = store.readQuery({
+            query: productsQuery,
+            variables: state.variables,
+          });
+          data.productsConnection.edges = data.productsConnection.edges.map(x =>
+            x.node.id === updateProduct.id
+              ? {
+                  __typename: 'Node',
+                  cursor: updateProduct.id,
+                  node: updateProduct,
+                }
+              : x
+          );
+          store.writeQuery({
+            query: productsQuery,
+            data,
+            variables: state.variables,
+          });
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+
+    this.props.history.push('/products');
+  };
+
+  render() {
+    const {
+      location: { state },
+    } = this.props;
+
     return (
       <Screen title="Edit Product">
         <Form
-            initialValues={{
-                ...state,
-                pictureUrl: `http://10.0.3.2:4000/${state.pictureUrl}`,
-                price: `${state.price}`
-            }}
-            submit={this.submit}
+          initialValues={{
+            ...state,
+            pictureUrl: `http://10.0.3.2:4000/${state.pictureUrl}`,
+            price: `${state.price}`,
+          }}
+          submit={this.submit}
         />
       </Screen>
     );
