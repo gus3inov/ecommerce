@@ -53,7 +53,39 @@ export const productsQuery = gql`
   }
 `;
 
-export const deleteProductMutation = gql`
+const editProductMutation = gql`
+  mutation($id: ID!, $price: Float) {
+    updateProduct(id: $id, price: $price) {
+      __typename
+      id
+      name
+      price
+      pictureUrl
+      seller {
+        id
+      }
+    }
+  }
+`;
+
+const productsSubscription = gql`
+  subscription {
+    product(where: { mutation_in: UPDATED }) {
+      node {
+        __typename
+        id
+        name
+        price
+        pictureUrl
+        seller {
+          id
+        }
+      }
+    }
+  }
+`;
+
+const deleteProductMutation = gql`
   mutation($id: ID!) {
     deleteProduct(where: { id: $id }) {
       id
@@ -71,6 +103,9 @@ export const deleteProductMutation = gql`
   }),
   graphql(deleteProductMutation, {
     name: 'deleteProduct',
+  }),
+  graphql(editProductMutation, {
+    name: 'editProductMutate',
   })
 )
 class Products extends React.Component {
@@ -87,6 +122,25 @@ class Products extends React.Component {
     const { userId } = jwtDecode(token);
     this.setState({
       userId,
+    });
+    this.props.data.subscribeToMore({
+      document: productsSubscription,
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log(subscriptionData.data);
+        if (!subscriptionData.data || +!subscriptionData.data.product) {
+          return prev;
+        }
+
+        const { node } = subscriptionData.data.product;
+
+        prev.productsConnection.edges = prev.productsConnection.edges.map(x =>
+          x.node.id === node.id
+            ? { __typename: 'Node', cursor: node.id, node }
+            : x
+        );
+
+        return prev;
+      },
     });
   }
 
@@ -202,9 +256,20 @@ class Products extends React.Component {
     }
   };
 
+  increasePrise = item => {
+    const { editProductMutate } = this.props;
+
+    editProductMutate({
+      variables: {
+        id: item.id,
+        price: item.price + 5,
+      },
+    });
+  };
+
   render() {
     const {
-      data: { productsConnection, variables },
+      data: { subscribeToMore, productsConnection, variables },
       loading,
       history,
     } = this.props;
@@ -269,6 +334,7 @@ class Products extends React.Component {
                 key={item.id}
                 userId={userId}
                 data={item}
+                handlePrise={this.increasePrise}
                 handleRecord={this.recordProduct}
                 handleDelete={this.deleteProduct}
               />
