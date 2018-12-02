@@ -30,7 +30,9 @@
     "apollo-client-preset": "^1.0.8",
     "apollo-link-context": "^1.0.8",
     "apollo-link-state": "^0.4.2",
+    "apollo-link-ws": "^1.0.10",
     "apollo-upload-client": "^8.1.0",
+    "apollo-utilities": "^1.0.26",
     "eslint-config-airbnb": "^17.0.0",
     "expo": "^25.0.0",
     "graphql": "^0.13.2",
@@ -42,6 +44,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
     "react-native-extended-stylesheet": "^0.8.1",
     "react-router": "^4.3.1",
-    "react-router-native": "^4.3.0"
+    "react-router-native": "^4.3.0",
+    "subscriptions-transport-ws": "^0.9.15"
   }
 }
