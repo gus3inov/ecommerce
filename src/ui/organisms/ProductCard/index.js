@@ -15,7 +15,7 @@ import {
 import styles from './style';
 
 const ProductCard = props => {
-  const { userId, data, handleDelete, handleRecord } = props;
+  const { userId, data, handleDelete, handleRecord, handlePrise } = props;
   const { id, name, price, pictureUrl, showButtons } = data;
 
   return (
@@ -38,7 +38,7 @@ const ProductCard = props => {
       </CardItem>
       <CardItem>
         <Left>
-          <Button transparent>
+          <Button transparent onPress={() => handlePrise(data)}>
             <Icon active name="card" />
             <Text>{price}</Text>
           </Button>
